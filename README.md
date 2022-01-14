@@ -1,2 +1,2 @@
 # Monopoly
-Mpnopoly Game
+Monopoly Game
