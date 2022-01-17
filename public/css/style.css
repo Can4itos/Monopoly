@@ -1,0 +1,38 @@
+body {
+  padding: 40px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #c1dde9;
+}
+#container{
+  display: flex;
+}
+p{
+margin: 3px;
+}
+pre{
+  margin: 0px;
+}
+#fields {
+flex:1;
+}
+#players {
+display: flex;
+flex-direction: row;
+flex:3;
+}
+#players p{
+color: rgba(117, 190, 218, 0.0)
+}
+#prices {
+flex:3;
+}
+#move{
+flex:1;
+}
+br{
+  height: 30px;
+}
+
