@@ -1,5 +1,8 @@
 let {field, companyPrices, rand, stepChange} = require("./monopolyStatick");
-
+function randColor(){
+    let color = Math.floor(Math.random() * 16777216).toString(16);
+    return '#000000'.slice(0, -color.length) + color;
+}
 class Monopoly {
     constructor() {
         this.players = [];
@@ -51,7 +54,7 @@ class Monopoly {
 
     addPlayer(id){
         if(!this.players.find(p => p.id == id)){
-            this.players.push({ id: id, position: 0, money: 8000, isReady: false });
+            this.players.push({ id: id, position: 0, money: 8000, isReady: false, color:randColor()});
         }
     }
 
@@ -73,12 +76,14 @@ class Monopoly {
                     if(player.money >= this.companyPrices[cell.name].current){
                         player.money -= this.companyPrices[cell.name].current;
                         cell.playerId = action.id;
+                        cell.color = player.color;
                     }
                 }
                 if(cell.type == "city" && !cell.playerId){
                     if(player.money >= cell.price){
                         player.money -= cell.price;
                         cell.playerId = action.id;
+                        cell.color = player.color;
                     }
                 }
             } break;
@@ -94,27 +99,5 @@ class Monopoly {
         this.io.emit("game",game);
     }
 }
-
-
-
-//let players = [
-    //{ id: 1, name: "Yura" },
-    //{ id: 2, name: "Sasha" }
-//]
-
-let actionBuy = {
-    id: 1,
-    act: "BUY",
-}
-let actionReady = {
-    id: 1,
-    act: "READY",
-}
-
-
-//let game = new Monopoly(players);
-///game.nextStep();
-//game.processAction(actionBuy);
-//let g = 0;
 
 module.exports = {Monopoly};

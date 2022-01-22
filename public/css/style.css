@@ -21,18 +21,23 @@ flex:1;
 #players {
 display: flex;
 flex-direction: row;
-flex:3;
+flex:1;
 }
 #players p{
 color: rgba(117, 190, 218, 0.0)
 }
 #prices {
-flex:3;
+flex:1;
 }
 #move{
 flex:1;
 }
-br{
-  height: 30px;
+#money{
+flex:1;
 }
-
+td{
+padding: 20px;
+padding-right: 5px;
+padding-left: 5px;
+border: 2px solid black;
+}
