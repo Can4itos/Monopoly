@@ -10,6 +10,7 @@ let spiral = [[0,1,2,3,4,5,6,7,8],
 [22,21,20,19,18,17,16,15,14]];
 
 let game;
+let idForSale = "";
 
 var socket = io();
 if(!localStorage.getItem("id")){
@@ -23,7 +24,14 @@ let ready = document.querySelector("#ready");
 let prices = document.querySelector("#prices");
 let move = document.querySelector("#move");
 let money = document.querySelector("#money");
+let sell = document.querySelector('#sell');
+sell.disabled = true;
 
+
+sell.addEventListener('click', async () => {
+    socket.emit("action",{id: localStorage.getItem("id"), act: "SELL", idCell: idForSale});
+    sell.disabled = true;
+});
 buy.addEventListener('click', async() => {
     socket.emit("action",{id: localStorage.getItem("id"), act: "BUY"});
 });
@@ -32,41 +40,30 @@ ready.addEventListener('click', async() => {
 });
 
 socket.on('game', (g) => {
-    /*let fields;
-    for(let i = 0; i < 7; i++){
-        for(let j = 0; j < 9; j++){
-            fields = document.querySelector(`#row${i}str${j}`);
-            fields.innerHTML = JSON.stringify(g.field[i*9+j].type);
-            if(g.field[i*9+j].color){
-                fields.style.background = (g.field[i*9+j].color)
-            }
-        }
-    }*/
     let fields = document.querySelector('#fields');
-    let textFields = "<table>";
+    let textFields = "<table id = 'table'>";
     for(let i = 0; i < 7; i++){
         textFields += "<tr>";
         for(let j = 0; j < 9; j++){
-            textFields += `<td id = plase${spiral[i][j]}>${JSON.stringify(g.field[spiral[i][j]].type)}</td>`;
+            textFields += `<td id = place${spiral[i][j]}></td>`;
         }
     }
     fields.innerHTML = textFields+"</tr>"
     for(let i = 0; i < 7; i++){
         for(let j = 0; j < 9; j++){
-            let fieldsColor = document.querySelector(`#plase${spiral[i][j]}`);
-            fieldsColor.style.background = (g.field[spiral[i][j]].color);
+            let fieldsColor = document.querySelector(`#place${spiral[i][j]}`);
+            fieldsColor.style = `background-image: url(img/${g.field[spiral[i][j]].img});`
+            if(g.field[spiral[i][j]].playerId){
+                fieldsColor.innerHTML = `<div id = "buyed" style = 'background-color:${g.field[spiral[i][j]].color};'></div>`
+            }
         }
     }
-
     g.players.forEach(p => {
-        let fields = document.querySelector(`#plase${p.position}`);
-        fields.innerHTML += `<p id="player${p.id}">${JSON.stringify(p.id)}</p>`;
+        let fields = document.querySelector(`#place${p.position}`);
+        fields.innerHTML += `<div class = "player" id="player${p.id}"></div>`;
         let playerX = document.querySelector(`#player${p.id}`);
-        playerX.style.height = "15px";
-        playerX.style.color = p.color;
-        playerX.style.background = "white";
+        playerX.style.background = p.color;
     });
-
     prices.innerHTML=``;
     for(let p in g.companyPrices){
             prices.innerHTML+= `<p>${JSON.stringify(p)}: ${JSON.stringify(g.companyPrices[p].current)}</p>`;
@@ -75,5 +72,14 @@ socket.on('game', (g) => {
     money.innerHTML=``;
     g.players.forEach(p => {
         money.innerHTML += `<p>${JSON.stringify(p.id)}: ${JSON.stringify(p.money)}`;
+    });
+    let table = document.querySelector('table');
+    table.addEventListener('click', function(e){
+        idForSale = e.target.id.slice(5);
+        if(g.field[idForSale].playerId == localStorage.getItem("id")){
+            sell.disabled = false;
+        }else{
+            sell.disabled = true;
+        }
     });
 });

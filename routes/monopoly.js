@@ -91,7 +91,20 @@ class Monopoly {
                 player.isReady = true;
                 this.nextStep();
                 console.log("ready");
-            }
+            }break;
+            case "SELL": {
+                let cell = this.field[action.idCell];
+                if(cell.playerId == action.id){
+                    cell.playerId = null;
+                    if(cell.type == "company"){
+                        player.money += this.companyPrices[cell.name].current/2;
+                    }
+                    if(cell.type == "city"){
+                        player.money += cell.price/2;
+                    }
+                    cell.color = "white";
+                }
+            } break;
         }
     }
     sendState(){
